@@ -3,27 +3,26 @@
 <html>
 <head>
     <script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta charset="utf-8">
-    <title>eQ cricket</title>
+    <title>Konva Complex Drag and Drop Bounds Demo</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-			background-image: url("img/blankField.png");
-			background-repeat: no-repeat;
-			height:100%;
-			overflow: visible;
-        }
-		
-		#container{
-			height: 80%;
-		}
+
+          body {
+              margin: 0;
+              padding: 0;
+  			background-image: url("img/blankField.png");
+  			background-repeat: no-repeat;
+  			height:100%;
+  			overflow: visible;
+          }
+          #container{
+            height: 80%;
+          }
     </style>
 </head>
 <body>
 <div id="container"></div>
-
 <script>
     var width = window.innerWidth;
     var height = window.innerHeight;
@@ -35,60 +34,162 @@
     });
 
     var layer = new Konva.Layer();
+
+    // bound below y=50
+    var getBluePlayerGroup = function(pageX, pageY){
+        return new Konva.Group({
+            x: pageX,
+            y: pageY,
+            draggable: true,
+            dragBoundFunc: function(pos) {
+                var newY = pos.y < 50 ? 50 : pos.y;
+                return {
+                    x: pos.x,
+                    y: newY
+                };
+            }
+        });
+    };
+
+    // bound inside a circle
+    var getYellowPlayerGroup = function(pageX, pageY){
+      return new Konva.Group({
+          x: pageX,
+          y: pageY,
+          draggable: true,
+          dragBoundFunc: function(pos) {
+              var newY = pos.y < 50 ? 50 : pos.y;
+              return {
+                  x: pos.x,
+                  y: newY
+              };
+          }
+      });
+    };
+
+    var getUmpirePlayerGroup = function(pageX, pageY){
+
+      return new Konva.Group({
+          x: pageX,
+          y: pageY,
+          draggable: true,
+          dragBoundFunc: function(pos) {
+              var newY = pos.y < 50 ? 50 : pos.y;
+              return {
+                  x: pos.x,
+                  y: newY
+              };
+          }
+      });
+    };
+
+    var blueText = new Konva.Text({
+        fontSize: 12,
+        fontFamily: 'Calibri',
+        text: 'Gaurav',
+        fill: 'black',
+        padding: 10
+    });
+
+    var getTextNode = function(stageBox , number)  {
+      var textNode = new Konva.Text({
+          fontSize: 12,
+          fontFamily: 'Calibri',
+          text: 'Player'+ number,
+          fill: 'black',
+          padding: 10
+      });
+
+      textNode.on('dblclick', () => {
+            // create textarea over canvas with absolute position
+
+            // first we need to find its positon
+            var textPosition = textNode.getAbsolutePosition();
+
+            var areaPosition = {
+                x: textPosition.x + stageBox.left,
+                y: textPosition.y + stageBox.top
+            };
+
+
+            // create textarea and style it
+            var textarea = document.createElement('textarea');
+            document.body.appendChild(textarea);
+
+            textarea.value = textNode.text();
+            textarea.style.position = 'absolute';
+            textarea.style.top = areaPosition.y + 'px';
+            textarea.style.left = areaPosition.x + 'px';
+            textarea.style.width = textNode.width();
+
+            textarea.focus();
+
+
+            textarea.addEventListener('keydown', function (e) {
+                // hide on enter
+                if (e.keyCode === 13) {
+                    textNode.text(textarea.value);
+                    layer.draw();
+                    document.body.removeChild(textarea);
+                }
+            });
+        });
+
+        return textNode;
+  }
+
+    var getBluePlayer = function(textNode) {
+        return new Konva.Circle({
+        width: textNode.getWidth(),
+        height: textNode.getHeight(),
+        radius:10,
+        fill: 'red',
+        stroke: 'black',
+        strokeWidth: 4
+    });
+  }
+
+    var getYellowPlayer = function(textNode) {
+      return new Konva.Circle({
+        width: textNode.getWidth(),
+        height: textNode.getHeight(),
+        radius:10,
+        fill: 'yellow',
+        stroke: 'black',
+        strokeWidth: 4
+    });
+  }
+
+
+
+    var blueGroup = getBluePlayerGroup(30,70);
+    var textNode = getTextNode(stage.getContainer().getBoundingClientRect());
+    blueGroup.add(getBluePlayer(textNode)).add(textNode);
     var rectX = 450;
     var rectY = 230;
+    var yellowGroup = getYellowPlayerGroup(rectX,rectY);
+    var textNode1 = getTextNode(stage.getContainer().getBoundingClientRect(),1);
+    yellowGroup.add(getYellowPlayer(textNode1)).add(textNode1);
 
-    var wk = new Konva.Rect({
-        x: rectX,
-        y: rectY,
-        width: 15,
-        height: 15,
-        fill: '#FF0200',
-        stroke: 'black',
-        strokeWidth: 4,
-        draggable: true
-    });
-	
-	
-    layer.add(wk);
+    //layer.add(blueGroup);
+    layer.add(yellowGroup);
+
+    // add the layer to the stage
     stage.add(layer);
-	
-	var getPlayer = function(playerName, pageX, pageY){
-	return new Konva.Circle({
-      x: pageX,
-      y: pageY,
-      radius: 10,
-      fill: '#FF0200',
-      stroke: 'black',
-      strokeWidth: 4,
-	  draggable: true
-    });
-	}
-		
-	/*return  new Konva.Text({
-      x: rectX,
-      y: rectY,
-      text: playerName,
-      fontSize: 18,
-      fontFamily: 'Calibri',
-      fill: 'red',
-      width: 300,
-      padding: 20,
-      draggable:true,
-	  shadowColor: 'red'
-    });*/
-window.playerCount=0;
-	$("#container").on('click', function(e){
-		
-		if(window.playerCount<10){
-			var player = getPlayer("", e.pageX, e.pageY);
-			layer.add(player);
-			stage.add(layer);
-			window.playerCount++;
-		}
-		
-	});
 
+    window.bluePlayerCount=2;
+    	$("#container").on('click', function(e){
+
+    		if(window.bluePlayerCount<=11){
+    			var playerGroup = getBluePlayerGroup( e.pageX, e.pageY);
+          var text = getTextNode( stage.getContainer().getBoundingClientRect(),window.bluePlayerCount);
+          playerGroup.add(getBluePlayer(text)).add(text);
+    			layer.add(playerGroup);
+    			stage.add(layer);
+    			window.bluePlayerCount++;
+    		}
+
+    	});
 </script>
 
 </body>
