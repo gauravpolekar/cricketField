@@ -1,4 +1,4 @@
-# cricketField
+# cricketField [Cricket Field]
 Create a field plan online for your cricket match.
 
 ## Getting started
