@@ -10,6 +10,10 @@ The red square behined the crease is wicket keeper, For all other fielders, Just
 
 You and add total 11 fielders and drag to adjust there positions.
 
+##Credits
+konvajs [https://konvajs.org/] 
+
+
 
 ## Contributing
 If you are a cricket enthusiast and want to add any change to this project, Feel free to change and submit the pull request.
