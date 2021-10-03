@@ -18,4 +18,4 @@ konvajs [https://konvajs.org/]
 
 ## Contributing
 If you are a cricket enthusiast and want to add any change to this project, Feel free to change and submit the pull request.
-read CONTRIBUTING.md for more details.
+read [CONTRIBUTING.md](https://github.com/gauravpolekar/cricketField/blob/master/CONTRIBUTING.md) for more details.
