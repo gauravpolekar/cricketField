@@ -1,4 +1,4 @@
-# Contribute t cricket field
+# Contribute to cricket field
 
 Its a basic html and javascript project. Just fork and start your contribution.
 
